@@ -1,9 +1,9 @@
-Asterix|https://www.truyentranhphapbi.com/p/muc-luc-asterix-va-obelix.html
-Benoit|
-Donald|
-Iznogoud|
-LuckyLuke|https://www.truyentranhphapbi.com/p/muc-luc-lucky-luke.html
-Spirou|
+Asterix|
+Benoit|https://www.truyentranhphapbi.com/search/label/Benoit?max-results=100
+Donald|https://www.truyentranhphapbi.com/search/label/Donald?max-results=100
+Iznogoud|https://www.truyentranhphapbi.com/search/label/Iznogoud?max-results=100
+LuckyLuke|
+Spirou|https://www.truyentranhphapbi.com/search/label/Spirou?max-results=100
 Tintin|
 Smurf|
-Yakari|
+Yakari|https://www.truyentranhphapbi.com/search/label/Yakari?max-results=100

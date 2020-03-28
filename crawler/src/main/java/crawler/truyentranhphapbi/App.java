@@ -87,44 +87,86 @@ public class App {
 
 			driver.get(cUrl);
 			TimeUnit.SECONDS.sleep(3);
+			
+
 
 			List<WebElement> elements = new ArrayList<WebElement>();
 			if (cTitle.equals("Asterix")) {
 				elements = driver.findElements(By.xpath("//div[@class='post-body entry-content']/a"));
-			} else if (cTitle.equals("LuckyLuke")) {
+			} else if (cTitle.equals("LuckyLuke") || cTitle.equals("Tintin")) {
 				elements = driver.findElements(By.xpath("//div[@class='post-body entry-content']/div/a"));
+			} else if (cTitle.equals("Smurf")) {
+				elements = driver.findElements(By.xpath("//div[@class='post-body entry-content']/ul/li/a"));
+			}else {
+				elements = driver.findElements(By.xpath("//div[@class='snips-image']/a"));
 			}
 
 			System.out.println(elements.size() + " chapters.");
 			
+			
 			for (WebElement ele : elements) {
-				System.out.println(ele.getText());
-				System.out.println(ele.getAttribute("href"));
+				
+				String nameOfChapter;
+				String linkOfChapter;
+				
+				if (ele.findElements(By.xpath("//div[@class='summary']")).size() != 0) {
+					nameOfChapter = ele.findElement(By.xpath(".//div[@class='snips-header']")).getText(); 
+					linkOfChapter = ele.getAttribute("href");
+				}else {
+					nameOfChapter = ele.getText();
+					linkOfChapter = ele.getAttribute("href");
+				}
+				
+				System.out.println(nameOfChapter);
+				System.out.println(linkOfChapter);
 				
 				listOfCompleted = readFromFiles("./listOfCompleted.txt");
 
 				
-				if (listOfCompleted.contains(ele.getText())) {
+				if (listOfCompleted.contains(nameOfChapter)) {
 					continue;
 				} else {
-					appendOneLine(ele.getText(), "./listOfCompleted.txt");
+					appendOneLine(nameOfChapter, "./listOfCompleted.txt");
 					WebDriver subDriver = new FirefoxDriver(opt);
-					subDriver.get(ele.getAttribute("href"));
+					subDriver.get(linkOfChapter);
+					
+					
+					List<WebElement> menuButton = new ArrayList<WebElement>();
+					menuButton = subDriver.findElements(By.xpath("//button[@id='overlay-menu']"));
 
-					List<WebElement> linkToEachFrame = new ArrayList<WebElement>();
-					linkToEachFrame = subDriver.findElements(By.xpath("//div[@class='read']/div/a"));
-					
-					
-					if (linkToEachFrame.isEmpty()) {
-						System.out.println(ele.getText() + " is Error!");
+					if (menuButton.size() != 0) {
+						menuButton.get(0).click();
+						
+						List<WebElement> linkToEachFrame = new ArrayList<WebElement>();
+						linkToEachFrame = subDriver.findElements(By.xpath("//div[@class='separator']/span/img"));
+						
+						if (linkToEachFrame.isEmpty()) {
+							System.out.println(nameOfChapter + " is Error!");
+						}
+						
+						int page = 1;
+						for(WebElement pics : linkToEachFrame) {
+							saveImageTo(pics.getAttribute("src"), cTitle, nameOfChapter, String.valueOf(page));
+							page++;
+							TimeUnit.SECONDS.sleep(1);
+						}
+						
+					}else {
+						List<WebElement> linkToEachFrame = new ArrayList<WebElement>();
+						linkToEachFrame = subDriver.findElements(By.xpath("//div[@class='separator']/a"));
+						
+						
+						if (linkToEachFrame.isEmpty()) {
+							System.out.println(nameOfChapter + " is Error!");
+						}
+						
+						int page = 1;
+						for(WebElement pics : linkToEachFrame) {
+							saveImageTo(pics.getAttribute("href"), cTitle, nameOfChapter, String.valueOf(page));
+							page++;
+							TimeUnit.SECONDS.sleep(1);
+						}
 					}
-					
-					int page = 1;
-					for(WebElement pics : linkToEachFrame) {
-						saveImageTo(pics.getAttribute("href"), cTitle, ele.getText(), String.valueOf(page));
-						page++;
-					}
-					
 					subDriver.close();
 				}
 
